@@ -447,8 +447,28 @@ body {
   font-size: 0.95rem;
   color: var(--text-secondary);
   line-height: 1.7;
-  margin-bottom: 28px;
+  margin-bottom: 16px;
   padding: 0 8px;
+}
+
+.result-footer {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+  margin-bottom: 20px;
+  padding: 0 8px;
+}
+
+.result-footer-link {
+  color: var(--accent-gold);
+  text-decoration: none;
+  font-weight: 600;
+  transition: color var(--transition-fast);
+}
+
+.result-footer-link:hover {
+  color: var(--accent-warm);
+  text-decoration: underline;
 }
 
 /* ---------- 招新宣传弹窗 ---------- */
@@ -577,6 +597,57 @@ body {
   transform: translateY(0);
 }
 
+/* 结算弹窗按钮组 */
+.result-btns {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.result-btns .btn-secondary {
+  padding: 14px 40px;
+}
+
+.result-btns .btn-primary {
+  padding: 14px 40px;
+}
+
+/* ---------- 分享弹窗 ---------- */
+.share-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius);
+  padding: 36px 32px;
+  text-align: center;
+  max-width: 480px;
+  width: 100%;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5);
+  animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+.share-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--accent-gold);
+  margin-bottom: 16px;
+}
+
+.share-text {
+  font-size: 1rem;
+  color: var(--text-primary);
+  line-height: 1.7;
+  margin-bottom: 24px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 10px;
+  border: 1px solid var(--border-subtle);
+  text-align: left;
+  word-break: break-all;
+}
+
 /* ---------- 页脚 ---------- */
 .site-footer {
   text-align: center;
@@ -650,6 +721,14 @@ body {
   .recruit-title {
     font-size: 1.15rem;
   }
+
+  .share-card {
+    padding: 28px 22px;
+  }
+
+  .share-text {
+    font-size: 0.9rem;
+  }
 }
 
 @media (max-width: 480px) {
@@ -704,6 +783,14 @@ body {
 
   .recruit-title {
     font-size: 1.05rem;
+  }
+
+  .share-card {
+    padding: 22px 16px;
+  }
+
+  .share-text {
+    font-size: 0.85rem;
   }
 
   .btn-secondary {

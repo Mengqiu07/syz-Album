@@ -53,7 +53,13 @@
         <div class="result-score" id="result-score"></div>
         <div class="result-level" id="result-level"></div>
         <div class="result-comment" id="result-comment"></div>
-        <button id="restart-btn" class="btn-primary">再来一局</button>
+        <p class="result-footer">
+          <a href="https://mengqiu07.github.io/XMProgramming/" target="_blank" class="result-footer-link">上海市向明中学计算机社</a>荣誉出品。欢迎各位向明学子加入此社团。欢迎各位帅哥美女多多宣传。
+        </p>
+        <div class="result-btns">
+          <button id="share-btn" class="btn-secondary">分享</button>
+          <button id="restart-btn" class="btn-primary">再来一局</button>
+        </div>
       </div>
     </div>
 
@@ -78,6 +84,15 @@
           <a href="https://mengqiu07.github.io/XMProgramming/" target="_blank" class="btn-primary btn-recruit">我要来看看</a>
           <button id="replay-btn" class="btn-secondary">再答一次</button>
         </div>
+      </div>
+    </div>
+
+    <!-- 分享弹窗（覆盖层） -->
+    <div id="share-overlay" class="result-overlay" style="display:none;">
+      <div class="share-card">
+        <h3 class="share-title">分享你的成绩</h3>
+        <p class="share-text" id="share-text"></p>
+        <button id="copy-share-btn" class="btn-primary">复制</button>
       </div>
     </div>
 
@@ -297,6 +312,10 @@
       document.getElementById('result-level').textContent = `难度：${currentDifficultyLabel} | ${level}`;
       document.getElementById('result-comment').textContent = comment;
 
+      // 生成分享文案
+      const shareText = `我在假如你也听孙燕姿·孙燕姿专辑大挑战中${currentDifficultyLabel}的难度中答对了${correctCount}题。你也来试试吧！https://mengqiu07.github.io/syz-Album/`;
+      document.getElementById('share-text').textContent = shareText;
+
       resultOverlay.style.display = 'flex';
     }
 
@@ -344,6 +363,35 @@
     restartBtn.addEventListener('click', function() {
       resultOverlay.style.display = 'none';
       document.getElementById('recruit-overlay').style.display = 'flex';
+    });
+
+    // 结算弹窗的"分享"按钮
+    document.getElementById('share-btn').addEventListener('click', function() {
+      document.getElementById('share-overlay').style.display = 'flex';
+    });
+
+    // 分享弹窗的"复制"按钮
+    document.getElementById('copy-share-btn').addEventListener('click', function() {
+      const shareText = document.getElementById('share-text').textContent;
+      navigator.clipboard.writeText(shareText).then(() => {
+        const btn = document.getElementById('copy-share-btn');
+        const originalText = btn.textContent;
+        btn.textContent = '已复制！';
+        btn.style.background = 'linear-gradient(135deg, #4ade80, #22c55e)';
+        setTimeout(() => {
+          btn.textContent = originalText;
+          btn.style.background = '';
+        }, 1500);
+      }).catch(() => {
+        alert('复制失败，请手动复制');
+      });
+    });
+
+    // 点击分享弹窗空白处关闭
+    document.getElementById('share-overlay').addEventListener('click', function(e) {
+      if (e.target === this) {
+        this.style.display = 'none';
+      }
     });
 
     // 招新弹窗的"再答一次"

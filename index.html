@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>假如你也听孙燕姿·孙燕姿专辑大挑战</title>
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
+  <link rel="stylesheet" href="stylesheet.css">
+</head>
+<body>
+
+  <!-- ========== 顶部背景图区域 ========== -->
+  <header class="top-banner">
+    <div class="banner-overlay"></div>
+    <h1 class="banner-title">假如你也听孙燕姿·孙燕姿专辑大挑战</h1>
+  </header>
+
+  <!-- ========== 主容器 ========== -->
+  <main class="container">
+
+    <!-- 开始界面 -->
+    <section id="start-screen" class="section-card start-screen">
+      <div class="start-icon">🎵</div>
+      <h2>欢迎来到孙燕姿专辑挑战</h2>
+      <p class="start-desc">测试你对孙燕姿专辑的了解程度！</p>
+      <button id="start-btn" class="btn-primary">开始挑战</button>
+    </section>
+
+    <!-- 题目界面 -->
+    <section id="quiz-screen" class="section-card quiz-screen" style="display:none;">
+      <!-- 难度导航栏 -->
+      <nav class="difficulty-nav" id="difficulty-nav">
+        <button class="difficulty-btn active" data-difficulty="easy" data-file="孙燕姿（简单）.xlsx">简单</button>
+        <button class="difficulty-btn" data-difficulty="medium" data-file="孙燕姿（中等）.xlsx">中等</button>
+        <button class="difficulty-btn" data-difficulty="hard" data-file="孙燕姿（最难）.xlsx">最难</button>
+      </nav>
+      <div class="quiz-header">
+        <span class="quiz-progress" id="progress-text">第 1 / 10 题</span>
+        <span class="quiz-score" id="score-text">正确: 0</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" id="progress-fill"></div>
+      </div>
+      <h2 class="question-text" id="question-text"></h2>
+      <div class="options-grid" id="options-container"></div>
+    </section>
+
+    <!-- 结算弹窗（覆盖层） -->
+    <div id="result-overlay" class="result-overlay" style="display:none;">
+      <div class="result-card">
+        <div class="result-icon" id="result-icon"></div>
+        <h2 class="result-title" id="result-title"></h2>
+        <div class="result-score" id="result-score"></div>
+        <div class="result-level" id="result-level"></div>
+        <div class="result-comment" id="result-comment"></div>
+        <button id="restart-btn" class="btn-primary">再来一局</button>
+      </div>
+    </div>
+
+    <!-- 招新宣传弹窗（覆盖层） -->
+    <div id="recruit-overlay" class="result-overlay" style="display:none;">
+      <div class="recruit-card">
+        <div class="recruit-badge">🚀 社团招新</div>
+        <h2 class="recruit-title">全新向明计算机社正式招新啦！</h2>
+        <p class="recruit-intro">多元编程创意实践，全新成立、覆盖三大技术方向的综合编程社团。零基础完全无门槛！感兴趣都欢迎咨询！</p>
+        <div class="recruit-tracks">
+          <h3>开设三条完整学习赛道，双线分层教学适配所有人</h3>
+          <div class="tracks-list">
+            <span class="track-tag">C++ 程序开发</span>
+            <span class="track-tag">网页前端设计</span>
+            <span class="track-tag">Unity 游戏创作</span>
+          </div>
+          <p class="recruit-detail">不管零基础入门、想休闲上课，在这里都能找到适配的学习路线，能力绝不会被埋没。</p>
+          <p class="recruit-detail">分层教学兼顾多玩家，零基础也能稳步产出完整作品。</p>
+        </div>
+        <p class="recruit-vibe">社团氛围轻松自在、社团日常福利不断，轻松学技术快乐交朋友！</p>
+        <div class="recruit-btns">
+          <a href="https://mengqiu07.github.io/XMProgramming/" target="_blank" class="btn-primary btn-recruit">我要来看看</a>
+          <button id="replay-btn" class="btn-secondary">再答一次</button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- 页脚 -->
+  <footer class="site-footer">
+    <p>上海市向明中学计算机社荣誉出品。欢迎各位向明学子加入此社团。欢迎各位帅哥美女多多宣传。</p>
+  </footer>
+
+  <script>
+    // ==================== 全局状态 ====================
+    let questions = [];           // 所有题目（原始数据）
+    let quizQuestions = [];       // 当前局的题目（乱序后）
+    let currentIndex = 0;
+    let correctCount = 0;
+    let totalQuestions = 10;
+    let answered = false;
+    let currentDifficulty = 'easy';        // 当前难度: easy / medium / hard
+    let currentDifficultyLabel = '简单';    // 当前难度中文标签
+
+    // 难度名称映射
+    const difficultyLabels = {
+      easy: '简单',
+      medium: '中等',
+      hard: '最难'
+    };
+
+    // ==================== DOM 元素 ====================
+    const startScreen = document.getElementById('start-screen');
+    const quizScreen = document.getElementById('quiz-screen');
+    const resultOverlay = document.getElementById('result-overlay');
+    const startBtn = document.getElementById('start-btn');
+    const restartBtn = document.getElementById('restart-btn');
+    const questionText = document.getElementById('question-text');
+    const optionsContainer = document.getElementById('options-container');
+    const progressText = document.getElementById('progress-text');
+    const scoreText = document.getElementById('score-text');
+    const progressFill = document.getElementById('progress-fill');
+    const difficultyNav = document.getElementById('difficulty-nav');
+    const difficultyBtns = difficultyNav.querySelectorAll('.difficulty-btn');
+
+    // ==================== 加载 Excel 数据 ====================
+    async function loadData(filename) {
+      try {
+        const response = await fetch('data/' + filename);
+        const buffer = await response.arrayBuffer();
+        const workbook = XLSX.read(buffer, { type: 'array' });
+        const sheetName = workbook.SheetNames[0];
+        const sheet = workbook.Sheets[sheetName];
+        const data = XLSX.utils.sheet_to_json(sheet);
+
+        // 解析数据：假设列名为 "题目" 和 "答案"，或者第一列为题目，第二列为答案
+        const keys = Object.keys(data[0]);
+        const questionKey = keys[0];
+        const answerKey = keys[1];
+
+        questions = data.map(row => ({
+          question: String(row[questionKey]).trim(),
+          answer: String(row[answerKey]).trim()
+        }));
+
+        console.log(`加载了 ${questions.length} 道题目 (${filename})`, questions);
+        return true;
+      } catch (err) {
+        console.error('加载数据失败:', err);
+        questions = [
+          { question: "《天黑黑》收录在哪张专辑？", answer: "《孙燕姿》同名专辑" },
+          { question: "《遇见》收录在哪张专辑？", answer: "《The Moment》" },
+          { question: "《我怀念的》收录在哪张专辑？", answer: "《逆光》" },
+          { question: "《开始懂了》收录在哪张专辑？", answer: "《我要的幸福》" },
+          { question: "《绿光》收录在哪张专辑？", answer: "《风筝》" },
+          { question: "孙燕姿的第一张专辑叫什么？", answer: "《孙燕姿》同名专辑" },
+          { question: "《我不难过》收录在哪张专辑？", answer: "《未完成》" },
+          { question: "《第一天》收录在哪张专辑？", answer: "《完美的一天》" },
+          { question: "《克卜勒》收录在哪张专辑？", answer: "《克卜勒》" },
+          { question: "《跳舞的梵谷》收录在哪张专辑？", answer: "《跳舞的梵谷》" },
+          { question: "孙燕姿2000年出道，首张专辑获得什么奖？", answer: "金曲奖最佳新人奖" },
+          { question: "《神奇》收录在哪张专辑？", answer: "《未完成》" },
+          { question: "《爱情证书》收录在哪张专辑？", answer: "《孙燕姿》同名专辑" },
+          { question: "《超快感》收录在哪张专辑？", answer: "《孙燕姿》同名专辑" },
+          { question: "《逃亡》收录在哪张专辑？", answer: "《风筝》" }
+        ];
+        return true;
+      }
+    }
+
+    // ==================== 工具函数：洗牌 ====================
+    function shuffle(arr) {
+      const a = [...arr];
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    // ==================== 生成题目 ====================
+    function generateQuiz() {
+      // 随机选 totalQuestions 道题，打乱顺序
+      const shuffled = shuffle(questions);
+      const selected = shuffled.slice(0, Math.min(totalQuestions, questions.length));
+      totalQuestions = selected.length;
+
+      quizQuestions = selected.map((q, idx) => {
+        // 生成选项：正确答案 + 3个随机错误答案
+        const otherAnswers = questions
+          .filter(x => x.answer !== q.answer)
+          .map(x => x.answer);
+        const wrongAnswers = shuffle(otherAnswers).slice(0, 3);
+        const options = shuffle([q.answer, ...wrongAnswers]);
+        return {
+          ...q,
+          options: options,
+          correctAnswer: q.answer
+        };
+      });
+
+      currentIndex = 0;
+      correctCount = 0;
+    }
+
+    // ==================== 显示当前题目 ====================
+    function showQuestion() {
+      if (currentIndex >= quizQuestions.length) {
+        showResult();
+        return;
+      }
+
+      answered = false;
+      const q = quizQuestions[currentIndex];
+
+      questionText.textContent = q.question;
+      progressText.textContent = `第 ${currentIndex + 1} / ${totalQuestions} 题`;
+      scoreText.textContent = `正确: ${correctCount}`;
+      progressFill.style.width = `${((currentIndex) / totalQuestions) * 100}%`;
+
+      optionsContainer.innerHTML = '';
+      q.options.forEach((opt, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'option-btn';
+        btn.textContent = opt;
+        btn.addEventListener('click', () => handleAnswer(opt, btn));
+        optionsContainer.appendChild(btn);
+      });
+    }
+
+    // ==================== 处理答案 ====================
+    function handleAnswer(selected, clickedBtn) {
+      if (answered) return;
+      answered = true;
+
+      const q = quizQuestions[currentIndex];
+      const allBtns = optionsContainer.querySelectorAll('.option-btn');
+
+      // 禁用所有按钮
+      allBtns.forEach(b => b.disabled = true);
+
+      // 高亮正确答案
+      allBtns.forEach(b => {
+        if (b.textContent === q.correctAnswer) {
+          b.classList.add('correct');
+        }
+      });
+
+      if (selected === q.correctAnswer) {
+        clickedBtn.classList.add('correct');
+        correctCount++;
+        scoreText.textContent = `正确: ${correctCount}`;
+      } else {
+        clickedBtn.classList.add('wrong');
+      }
+
+      // 延迟后进入下一题
+      setTimeout(() => {
+        currentIndex++;
+        progressFill.style.width = `${(currentIndex / totalQuestions) * 100}%`;
+        showQuestion();
+      }, 800);
+    }
+
+    // ==================== 显示结算弹窗 ====================
+    function showResult() {
+      const ratio = correctCount / totalQuestions;
+      let icon, title, level, comment;
+
+      if (ratio === 1) {
+        icon = '🏆';
+        title = '完美通关！';
+        level = '级别：骨灰级姿迷';
+        comment = '你简直是孙燕姿的百科全书！每张专辑都了如指掌，姿迷之王非你莫属！🎉';
+      } else if (ratio >= 0.8) {
+        icon = '🌟';
+        title = '非常棒！';
+        level = '级别：资深姿迷';
+        comment = '你对孙燕姿的专辑非常熟悉，只差一点点就完美了！继续加油~';
+      } else if (ratio >= 0.6) {
+        icon = '👍';
+        title = '还不错！';
+        level = '级别：忠实姿迷';
+        comment = '你对孙燕姿的歌曲有一定了解，多听听她的专辑会更熟悉哦！';
+      } else if (ratio >= 0.4) {
+        icon = '📖';
+        title = '还需努力';
+        level = '级别：初级姿迷';
+        comment = '看来你需要多补补课啦！孙燕姿还有很多好歌等着你去发现~';
+      } else {
+        icon = '🎧';
+        title = '继续加油';
+        level = '级别：新入坑姿迷';
+        comment = '欢迎来到孙燕姿的音乐世界！快去听听她的经典专辑吧，下次一定能答对更多！';
+      }
+
+      document.getElementById('result-icon').textContent = icon;
+      document.getElementById('result-title').textContent = title;
+      document.getElementById('result-score').textContent = `答对 ${correctCount} / ${totalQuestions} 题`;
+      document.getElementById('result-level').textContent = `难度：${currentDifficultyLabel} | ${level}`;
+      document.getElementById('result-comment').textContent = comment;
+
+      resultOverlay.style.display = 'flex';
+    }
+
+    // ==================== 切换难度 ====================
+    async function switchDifficulty(difficulty, filename, btn) {
+      // 更新激活状态
+      difficultyBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      // 更新当前难度
+      currentDifficulty = difficulty;
+      currentDifficultyLabel = difficultyLabels[difficulty];
+
+      // 加载对应难度的数据
+      await loadData(filename);
+
+      // 重新开始游戏
+      restartGame();
+    }
+
+    // ==================== 开始游戏 ====================
+    function startGame() {
+      generateQuiz();
+      startScreen.style.display = 'none';
+      quizScreen.style.display = 'block';
+      resultOverlay.style.display = 'none';
+      progressFill.style.width = '0%';
+      showQuestion();
+    }
+
+    // ==================== 重新开始 ====================
+    function restartGame() {
+      resultOverlay.style.display = 'none';
+      currentIndex = 0;
+      correctCount = 0;
+      generateQuiz();
+      progressFill.style.width = '0%';
+      scoreText.textContent = `正确: 0`;
+      showQuestion();
+    }
+
+    // ==================== 事件绑定 ====================
+    startBtn.addEventListener('click', startGame);
+    // 结算弹窗的"再来一局"改为先跳招新弹窗
+    restartBtn.addEventListener('click', function() {
+      resultOverlay.style.display = 'none';
+      document.getElementById('recruit-overlay').style.display = 'flex';
+    });
+
+    // 招新弹窗的"再答一次"
+    document.getElementById('replay-btn').addEventListener('click', function() {
+      document.getElementById('recruit-overlay').style.display = 'none';
+      restartGame();
+    });
+
+    // 难度导航按钮事件
+    difficultyBtns.forEach(btn => {
+      btn.addEventListener('click', function() {
+        const difficulty = this.dataset.difficulty;
+        const filename = this.dataset.file;
+        switchDifficulty(difficulty, filename, this);
+      });
+    });
+
+    // ==================== 初始化 ====================
+    (async function init() {
+      await loadData('孙燕姿（简单）.xlsx');
+      // 数据加载完成后启用开始按钮
+      startBtn.disabled = false;
+      startBtn.textContent = '开始挑战';
+    })();
+  </script>
+
+</body>
+</html>

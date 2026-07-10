@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>假如你也听孙燕姿·孙燕姿专辑大挑战</title>
+  <title>假如你也听张韶涵·张韶涵专辑大挑战</title>
   <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
   <link rel="stylesheet" href="stylesheet.css">
 </head>
@@ -12,7 +12,7 @@
   <!-- ========== 顶部背景图区域 ========== -->
   <header class="top-banner">
     <div class="banner-overlay"></div>
-    <h1 class="banner-title">假如你也听孙燕姿·孙燕姿专辑大挑战</h1>
+    <h1 class="banner-title">假如你也听张韶涵·张韶涵专辑大挑战</h1>
   </header>
 
   <!-- ========== 主容器 ========== -->
@@ -21,18 +21,18 @@
     <!-- 开始界面 -->
     <section id="start-screen" class="section-card start-screen">
       <div class="start-icon">🎵</div>
-      <h2>欢迎来到孙燕姿专辑挑战</h2>
-      <p class="start-desc">测试你对孙燕姿专辑的了解程度！</p>
+      <h2>欢迎来到张韶涵专辑挑战</h2>
+      <p class="start-desc">测试你对张韶涵专辑的了解程度！</p>
       <button id="start-btn" class="btn-primary">开始挑战</button>
     </section>
 
     <!-- 题目界面 -->
     <section id="quiz-screen" class="section-card quiz-screen" style="display:none;">
-      <!-- 难度导航栏 -->
+      <!-- 套数导航栏 -->
       <nav class="difficulty-nav" id="difficulty-nav">
-        <button class="difficulty-btn active" data-difficulty="easy" data-file="孙燕姿（简单）.xlsx">简单</button>
-        <button class="difficulty-btn" data-difficulty="medium" data-file="孙燕姿（中等）.xlsx">中等</button>
-        <button class="difficulty-btn" data-difficulty="hard" data-file="孙燕姿（最难）.xlsx">最难</button>
+        <button class="difficulty-btn active" data-difficulty="set1" data-file="张韶涵（第一套）.xlsx">第一套</button>
+        <button class="difficulty-btn" data-difficulty="set2" data-file="张韶涵（第二套）.xlsx">第二套</button>
+        <button class="difficulty-btn" data-difficulty="set3" data-file="张韶涵（第三套）.xlsx">第三套</button>
       </nav>
       <div class="quiz-header">
         <span class="quiz-progress" id="progress-text">第 1 / 10 题</span>
@@ -111,14 +111,14 @@
     let correctCount = 0;
     let totalQuestions = 10;
     let answered = false;
-    let currentDifficulty = 'easy';        // 当前难度: easy / medium / hard
-    let currentDifficultyLabel = '简单';    // 当前难度中文标签
+    let currentDifficulty = 'set1';        // 当前套数: set1 / set2 / set3
+    let currentDifficultyLabel = '第一套';    // 当前套数中文标签
 
-    // 难度名称映射
+    // 套数名称映射
     const difficultyLabels = {
-      easy: '简单',
-      medium: '中等',
-      hard: '最难'
+      set1: '第一套',
+      set2: '第二套',
+      set3: '第三套'
     };
 
     // ==================== DOM 元素 ====================
@@ -160,21 +160,21 @@
       } catch (err) {
         console.error('加载数据失败:', err);
         questions = [
-          { question: "《天黑黑》收录在哪张专辑？", answer: "《孙燕姿》同名专辑" },
-          { question: "《遇见》收录在哪张专辑？", answer: "《The Moment》" },
-          { question: "《我怀念的》收录在哪张专辑？", answer: "《逆光》" },
-          { question: "《开始懂了》收录在哪张专辑？", answer: "《我要的幸福》" },
-          { question: "《绿光》收录在哪张专辑？", answer: "《风筝》" },
-          { question: "孙燕姿的第一张专辑叫什么？", answer: "《孙燕姿》同名专辑" },
-          { question: "《我不难过》收录在哪张专辑？", answer: "《未完成》" },
-          { question: "《第一天》收录在哪张专辑？", answer: "《完美的一天》" },
-          { question: "《克卜勒》收录在哪张专辑？", answer: "《克卜勒》" },
-          { question: "《跳舞的梵谷》收录在哪张专辑？", answer: "《跳舞的梵谷》" },
-          { question: "孙燕姿2000年出道，首张专辑获得什么奖？", answer: "金曲奖最佳新人奖" },
-          { question: "《神奇》收录在哪张专辑？", answer: "《未完成》" },
-          { question: "《爱情证书》收录在哪张专辑？", answer: "《孙燕姿》同名专辑" },
-          { question: "《超快感》收录在哪张专辑？", answer: "《孙燕姿》同名专辑" },
-          { question: "《逃亡》收录在哪张专辑？", answer: "《风筝》" }
+          { question: "《隐形的翅膀》收录在哪张专辑？", answer: "《潘朵拉》" },
+          { question: "《欧若拉》收录在哪张专辑？", answer: "《欧若拉》" },
+          { question: "《淋雨一直走》收录在哪张专辑？", answer: "《有形的翅膀》" },
+          { question: "《亲爱的 那不是爱情》收录在哪张专辑？", answer: "《Ang 5.0》" },
+          { question: "《梦里花》收录在哪张专辑？", answer: "《梦里花》" },
+          { question: "张韶涵的第一张专辑叫什么？", answer: "《Over The Rainbow》" },
+          { question: "《遗失的美好》收录在哪张专辑？", answer: "《Over The Rainbow》" },
+          { question: "《寓言》收录在哪张专辑？", answer: "《Over The Rainbow》" },
+          { question: "《快乐崇拜》是谁和潘玮柏合唱的？", answer: "张韶涵" },
+          { question: "《不想懂得》收录在哪张专辑？", answer: "《Ang 5.0》" },
+          { question: "《手心的太阳》收录在哪张专辑？", answer: "《欧若拉》" },
+          { question: "《香水百合》收录在哪张专辑？", answer: "《潘朵拉》" },
+          { question: "《C大调》收录在哪张专辑？", answer: "《梦里花》" },
+          { question: "《看得最远的地方》收录在哪张专辑？", answer: "《第5季》" },
+          { question: "《白白的》收录在哪张专辑？", answer: "《第5季》" }
         ];
         return true;
       }
@@ -282,54 +282,54 @@
       if (ratio === 1) {
         icon = '🏆';
         title = '完美通关！';
-        level = '级别：骨灰级姿迷';
-        comment = '你简直是孙燕姿的百科全书！每张专辑都了如指掌，姿迷之王非你莫属！🎉';
+        level = '级别：骨灰级涵迷';
+        comment = '你简直是张韶涵的百科全书！每张专辑都了如指掌，涵迷之王非你莫属！🎉';
       } else if (ratio >= 0.8) {
         icon = '🌟';
         title = '非常棒！';
-        level = '级别：资深姿迷';
-        comment = '你对孙燕姿的专辑非常熟悉，只差一点点就完美了！继续加油~';
+        level = '级别：资深涵迷';
+        comment = '你对张韶涵的专辑非常熟悉，只差一点点就完美了！继续加油~';
       } else if (ratio >= 0.6) {
         icon = '👍';
         title = '还不错！';
-        level = '级别：忠实姿迷';
-        comment = '你对孙燕姿的歌曲有一定了解，多听听她的专辑会更熟悉哦！';
+        level = '级别：忠实涵迷';
+        comment = '你对张韶涵的歌曲有一定了解，多听听她的专辑会更熟悉哦！';
       } else if (ratio >= 0.4) {
         icon = '📖';
         title = '还需努力';
-        level = '级别：初级姿迷';
-        comment = '看来你需要多补补课啦！孙燕姿还有很多好歌等着你去发现~';
+        level = '级别：初级涵迷';
+        comment = '看来你需要多补补课啦！张韶涵还有很多好歌等着你去发现~';
       } else {
         icon = '🎧';
         title = '继续加油';
-        level = '级别：新入坑姿迷';
-        comment = '欢迎来到孙燕姿的音乐世界！快去听听她的经典专辑吧，下次一定能答对更多！';
+        level = '级别：新入坑涵迷';
+        comment = '欢迎来到张韶涵的音乐世界！快去听听她的经典专辑吧，下次一定能答对更多！';
       }
 
       document.getElementById('result-icon').textContent = icon;
       document.getElementById('result-title').textContent = title;
       document.getElementById('result-score').textContent = `答对 ${correctCount} / ${totalQuestions} 题`;
-      document.getElementById('result-level').textContent = `难度：${currentDifficultyLabel} | ${level}`;
+      document.getElementById('result-level').textContent = `套数：${currentDifficultyLabel} | ${level}`;
       document.getElementById('result-comment').textContent = comment;
 
       // 生成分享文案
-      const shareText = `我在假如你也听孙燕姿·孙燕姿专辑大挑战中${currentDifficultyLabel}的难度中答对了${correctCount}题。你也来试试吧！https://mengqiu07.github.io/syz-Album/`;
+      const shareText = `我在假如你也听张韶涵·张韶涵专辑大挑战中${currentDifficultyLabel}中答对了${correctCount}题。你也来试试吧！https://mengqiu07.github.io/syz-Album/`;
       document.getElementById('share-text').textContent = shareText;
 
       resultOverlay.style.display = 'flex';
     }
 
-    // ==================== 切换难度 ====================
+    // ==================== 切换套数 ====================
     async function switchDifficulty(difficulty, filename, btn) {
       // 更新激活状态
       difficultyBtns.forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
 
-      // 更新当前难度
+      // 更新当前套数
       currentDifficulty = difficulty;
       currentDifficultyLabel = difficultyLabels[difficulty];
 
-      // 加载对应难度的数据
+      // 加载对应套数的数据
       await loadData(filename);
 
       // 重新开始游戏
@@ -400,7 +400,7 @@
       restartGame();
     });
 
-    // 难度导航按钮事件
+    // 套数导航按钮事件
     difficultyBtns.forEach(btn => {
       btn.addEventListener('click', function() {
         const difficulty = this.dataset.difficulty;
@@ -411,7 +411,7 @@
 
     // ==================== 初始化 ====================
     (async function init() {
-      await loadData('孙燕姿（简单）.xlsx');
+      await loadData('张韶涵（第一套）.xlsx');
       // 数据加载完成后启用开始按钮
       startBtn.disabled = false;
       startBtn.textContent = '开始挑战';
